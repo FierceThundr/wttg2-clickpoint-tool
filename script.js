@@ -1,4 +1,4 @@
-var temp = [-1,0,0,0], fineoptions = [0], clickpoints = []
+var temp = [-1,0,0,0], altengine = false, fineoptions = [0], clickpoints = []
 
 function updateimage() {
   var reader = new FileReader(), input = document.getElementById("upload"), main = document.getElementById("main")
@@ -24,6 +24,10 @@ function toggleoptions(x) {
 
 function togglefineoptions(x) {
   document.getElementById("fine_options_wrapper").style.display = (x) ? "block":"none"
+}
+
+function togglealttags(x) {
+  document.getElementById("tags_wrapper").style.display = (x) ? "block":"none"
 }
 
 function getMousePosition(image, event) {
@@ -52,7 +56,7 @@ function clickpoint_new(x) {
   p = validate_position(temp[4],temp[5],temp[6],temp[7])
   r = element_create(p)
   
-  clickpoints.push({"position":p,"element":r,"is_clickpoint":true,"href":""})
+  clickpoints.push({"position":p,"element":r,"is_clickpoint":true,"cptag":false,"cftag":false,"href":""})
   
   togglefineoptions(true)
   toggleinterface(true)
@@ -83,12 +87,25 @@ function update_element() {
   document.getElementById("pos2y").value = p[3]
 }
 
+function update_engine(x) {
+  altengine = x
+  togglealttags(x)
+}
+
 function update_clickpoint(x) {
   clickpoints[fineoptions[0]].is_clickpoint = x
 }
 
 function update_reference(x) {
   clickpoints[fineoptions[0]].href = x
+}
+
+function update_cptag(x) {
+  clickpoints[fineoptions[0]].cptag = x
+}
+
+function update_cftag(x) {
+  clickpoints[fineoptions[0]].cftag = x
 }
 
 function element_create(x) {
@@ -152,65 +169,102 @@ function updatefineoptions(x) {
   document.getElementById("pos2x").value = clickpoints[fineoptions[0]].position[2]
   document.getElementById("pos2y").value = clickpoints[fineoptions[0]].position[3]
   document.getElementById("href").value = clickpoints[fineoptions[0]].href
-  document.getElementById("is_clickpoint").checked = clickpoints[fineoptions[0]].is_clickpoint
+  document.getElementById("is_cptag").checked = clickpoints[fineoptions[0]].cptag
+  document.getElementById("is_cftag").checked = clickpoints[fineoptions[0]].cftag
 }
 
 function exportsite() {
   var e, a = ""
   clickpoints.forEach(function(v) {
     if (v.is_clickpoint) {
-      a = a + `\n	<area shape="rect" coords="${v.position.join(",")}" class="hotZone">`
+      a = a + `\n      <area shape="rect" coords="${v.position.join(",")}" class="${(altengine) ? (((v.cftag) ? ((v.cptag) ? "CFTAG CPTAG":"CFTAG"):(v.cptag) ? "CPTAG":"")):"hotZone"}">`
     } else {
-      a = a + `\n	<area shape="rect" coords="${v.position.join(",")}" onMouseOver="LinkHover()" onMouseOut="LinkOut()" onclick="LinkClick('${v.href}')">`
+      a = a + `\n      <area shape="rect" coords="${v.position.join(",")}" onMouseOver="LinkHover()" onMouseOut="LinkOut()" onclick="LinkClick('${v.href}')">`
     }
   })
   
-  
-/*
-      <area shape="rect" coords="10,10,60,60" onMouseOver="LinkHover()" onMouseOut="LinkOut()" class="hotZone">
-      <area shape="rect" coords="10,10,60,60" onMouseOver="LinkHover()" onMouseOut="LinkOut()" onclick="LinkClick('websitereference.html')">
-*/
-  
-  
+  if (altengine) {
+    e = `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>${document.getElementById("title").value}</title>
+    <script type="text/javascript" language="javascript" src="script.js"></script>
+    <script type="text/javascript" language="javascript" src="../jQuery.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../basic.js"></script>
+    <link rel="stylesheet" type="text/css" href="../basic.css" />
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        background-color: #4c3010;
+      }
+      
+      #keySpot {
+        display: block;
+        position: absolute;
+        font-family:Arial, Helvetica;
+        color: #FFFFFF;
+        font-size: 14px;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+      
+      #content_wrapper {
+        position: relative;
+        width: 1153px;
+        margin: 0em auto;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="${document.getElementById("image").value}" width="1153" usemap="#Map" >
+    
+    <map name="Map">${a}
+    </map>
+  </body>
+</html>`
+  } else {
   e = `<!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>${document.getElementById("title").value}</title>
-<script type="text/javascript" language="javascript" src="../jQuery.min.js"></script>
-<script type="text/javascript" language="javascript" src="../basic.js"></script>
-<link rel="stylesheet" type="text/css" href="../basic.css" />
-<style>
-	body{
-		margin: 0px;
-		padding: 0px;
-		background-color: ${document.getElementById("color").value};
-	}
-	
-	img{
-		display: block;
-		margin: 0em auto;
-    user-select: none;
-	}
-	
-	#keySpot{
-		display: block;
-		position: absolute;
-		font-family:Arial, Helvetica;
-		color: ${document.getElementById("color2").value};
-		font-size: 14px;
-		font-weight: bold;
-	}
-</style>
- 
-</head>
-<body>
-
-<img src="${document.getElementById("image").value}" width="1153" usemap="#template" >
-<map name="template">${a}
-</map>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>${document.getElementById("title").value}</title>
+    <script type="text/javascript" language="javascript" src="../jQuery.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../basic.js"></script>
+    <link rel="stylesheet" type="text/css" href="../basic.css" />
+    <style>
+      body{
+        margin: 0px;
+        padding: 0px;
+        background-color: ${document.getElementById("color").value};
+      }
+      
+      img{
+        display: block;
+        margin: 0em auto;
+        user-select: none;
+      }
+      
+      #keySpot{
+        display: block;
+        position: absolute;
+        font-family:Arial, Helvetica;
+        color: ${document.getElementById("color2").value};
+        font-size: 14px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="${document.getElementById("image").value}" width="1153" usemap="#Map" >
+    
+    <map name="Map">${a}
+    </map>
+  </body>
 </html>`
+  }
+  
 navigator.clipboard.writeText(e)
 }
 

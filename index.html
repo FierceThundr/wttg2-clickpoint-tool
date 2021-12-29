@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>if (location.protocol !== 'https:') {location.replace(`https:${location.href.substring(location.protocol.length)}`)}</script>
     <title>WTTG2+ Clickpoint Tool</title>
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://use.fontawesome.com">
@@ -35,6 +36,9 @@
           <hr>
           <button onclick="clickpoint_new(0)">Add Clickpoint</button>
           <button onclick="exportsite()">Export</button>
+          <div class="interface_input" style="text-align:left;">
+            <label><input id="alt_engine" type="checkbox" style="vertical-align:middle;" onchange="update_engine(this.checked)"><span style="vertical-align:middle;margin-left:3px;">Use Alternate Engine</span></label>
+          </div>
           <input id="title" class="interface_input" type="text" placeholder="Website title">
           <input id="color" class="interface_input" type="text" placeholder="Background color">
           <input id="color2" class="interface_input" type="text" placeholder="Clickpoint color">
@@ -59,6 +63,14 @@
             
             <div class="interface_input" style="text-align:left;">
               <label><input id="is_clickpoint" type="checkbox" style="vertical-align:middle;" onchange="update_clickpoint(this.checked)"><span style="vertical-align:middle;margin-left:3px;">Is Clickpoint</span></label>
+            </div>
+            <div id="tags_wrapper" style="display:none;">
+              <div class="interface_input" style="text-align:left;">
+                <label><input id="is_cptag" type="checkbox" style="vertical-align:middle;" onchange="update_cptag(this.checked)"><span style="vertical-align:middle;margin-left:3px;">CPTAG</span></label>
+              </div>
+              <div class="interface_input" style="text-align:left;">
+                <label><input id="is_cftag" type="checkbox" style="vertical-align:middle;" onchange="update_cftag(this.checked)"><span style="vertical-align:middle;margin-left:3px;">CFTAG</span></label>
+              </div>
             </div>
             <input id="href" class="interface_input" type="text" placeholder="Website HREF" onchange="update_reference(this.value)">
             <button onclick="clickpoint_delete()">Delete Clickpoint</button>

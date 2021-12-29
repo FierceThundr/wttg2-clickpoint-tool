@@ -1,6 +1,6 @@
 # wttg2-clickpoint-tool
 
-This website is a simple tool for those creating website for the WTTG2+ mod using the WTTG1/twr styles.
+This website is a simple tool for those creating website for the WTTG2+ mod using the WTTG1/TWR styles.
 
 This tool can be used to create and manage clickpoints including those going between sub-pages.
 
